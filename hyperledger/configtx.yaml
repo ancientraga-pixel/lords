@@ -1,0 +1,204 @@
+Organizations:
+    - &OrdererOrg
+        Name: OrdererOrg
+        ID: OrdererMSP
+        MSPDir: crypto-config/ordererOrganizations/herbionyx.com/msp
+        Policies:
+            Readers:
+                Type: Signature
+                Rule: "OR('OrdererMSP.member')"
+            Writers:
+                Type: Signature
+                Rule: "OR('OrdererMSP.member')"
+            Admins:
+                Type: Signature
+                Rule: "OR('OrdererMSP.admin')"
+
+    - &FarmersCoop
+        Name: FarmersCoopMSP
+        ID: FarmersCoopMSP
+        MSPDir: crypto-config/peerOrganizations/farmers.herbionyx.com/msp
+        Policies:
+            Readers:
+                Type: Signature
+                Rule: "OR('FarmersCoopMSP.admin', 'FarmersCoopMSP.peer', 'FarmersCoopMSP.client')"
+            Writers:
+                Type: Signature
+                Rule: "OR('FarmersCoopMSP.admin', 'FarmersCoopMSP.client')"
+            Admins:
+                Type: Signature
+                Rule: "OR('FarmersCoopMSP.admin')"
+        AnchorPeers:
+            - Host: peer0.farmers.herbionyx.com
+              Port: 7051
+
+    - &LabsOrg
+        Name: LabsOrgMSP
+        ID: LabsOrgMSP
+        MSPDir: crypto-config/peerOrganizations/labs.herbionyx.com/msp
+        Policies:
+            Readers:
+                Type: Signature
+                Rule: "OR('LabsOrgMSP.admin', 'LabsOrgMSP.peer', 'LabsOrgMSP.client')"
+            Writers:
+                Type: Signature
+                Rule: "OR('LabsOrgMSP.admin', 'LabsOrgMSP.client')"
+            Admins:
+                Type: Signature
+                Rule: "OR('LabsOrgMSP.admin')"
+        AnchorPeers:
+            - Host: peer0.labs.herbionyx.com
+              Port: 8051
+
+    - &ProcessorsOrg
+        Name: ProcessorsOrgMSP
+        ID: ProcessorsOrgMSP
+        MSPDir: crypto-config/peerOrganizations/processors.herbionyx.com/msp
+        Policies:
+            Readers:
+                Type: Signature
+                Rule: "OR('ProcessorsOrgMSP.admin', 'ProcessorsOrgMSP.peer', 'ProcessorsOrgMSP.client')"
+            Writers:
+                Type: Signature
+                Rule: "OR('ProcessorsOrgMSP.admin', 'ProcessorsOrgMSP.client')"
+            Admins:
+                Type: Signature
+                Rule: "OR('ProcessorsOrgMSP.admin')"
+        AnchorPeers:
+            - Host: peer0.processors.herbionyx.com
+              Port: 9051
+
+    - &ManufacturersOrg
+        Name: ManufacturersOrgMSP
+        ID: ManufacturersOrgMSP
+        MSPDir: crypto-config/peerOrganizations/manufacturers.herbionyx.com/msp
+        Policies:
+            Readers:
+                Type: Signature
+                Rule: "OR('ManufacturersOrgMSP.admin', 'ManufacturersOrgMSP.peer', 'ManufacturersOrgMSP.client')"
+            Writers:
+                Type: Signature
+                Rule: "OR('ManufacturersOrgMSP.admin', 'ManufacturersOrgMSP.client')"
+            Admins:
+                Type: Signature
+                Rule: "OR('ManufacturersOrgMSP.admin')"
+        AnchorPeers:
+            - Host: peer0.manufacturers.herbionyx.com
+              Port: 10051
+
+    - &NMPBOrg
+        Name: NMPBOrgMSP
+        ID: NMPBOrgMSP
+        MSPDir: crypto-config/peerOrganizations/nmpb.herbionyx.com/msp
+        Policies:
+            Readers:
+                Type: Signature
+                Rule: "OR('NMPBOrgMSP.admin', 'NMPBOrgMSP.peer', 'NMPBOrgMSP.client')"
+            Writers:
+                Type: Signature
+                Rule: "OR('NMPBOrgMSP.admin', 'NMPBOrgMSP.client')"
+            Admins:
+                Type: Signature
+                Rule: "OR('NMPBOrgMSP.admin')"
+        AnchorPeers:
+            - Host: peer0.nmpb.herbionyx.com
+              Port: 11051
+
+Capabilities:
+    Channel: &ChannelCapabilities
+        V2_0: true
+    Orderer: &OrdererCapabilities
+        V2_0: true
+    Application: &ApplicationCapabilities
+        V2_0: true
+
+Application: &ApplicationDefaults
+    Organizations:
+    Policies:
+        Readers:
+            Type: ImplicitMeta
+            Rule: "ANY Readers"
+        Writers:
+            Type: ImplicitMeta
+            Rule: "ANY Writers"
+        Admins:
+            Type: ImplicitMeta
+            Rule: "MAJORITY Admins"
+    Capabilities:
+        <<: *ApplicationCapabilities
+
+Orderer: &OrdererDefaults
+    OrdererType: etcdraft
+    EtcdRaft:
+        Consenters:
+        - Host: orderer.herbionyx.com
+          Port: 7050
+          ClientTLSCert: crypto-config/ordererOrganizations/herbionyx.com/orderers/orderer.herbionyx.com/tls/server.crt
+          ServerTLSCert: crypto-config/ordererOrganizations/herbionyx.com/orderers/orderer.herbionyx.com/tls/server.crt
+    Addresses:
+        - orderer.herbionyx.com:7050
+    BatchTimeout: 2s
+    BatchSize:
+        MaxMessageCount: 10
+        AbsoluteMaxBytes: 99 MB
+        PreferredMaxBytes: 512 KB
+    Organizations:
+    Policies:
+        Readers:
+            Type: ImplicitMeta
+            Rule: "ANY Readers"
+        Writers:
+            Type: ImplicitMeta
+            Rule: "ANY Writers"
+        Admins:
+            Type: ImplicitMeta
+            Rule: "MAJORITY Admins"
+        BlockValidation:
+            Type: ImplicitMeta
+            Rule: "ANY Writers"
+
+Channel: &ChannelDefaults
+    Policies:
+        Readers:
+            Type: ImplicitMeta
+            Rule: "ANY Readers"
+        Writers:
+            Type: ImplicitMeta
+            Rule: "ANY Writers"
+        Admins:
+            Type: ImplicitMeta
+            Rule: "MAJORITY Admins"
+    Capabilities:
+        <<: *ChannelCapabilities
+
+Profiles:
+    HerbionyxOrdererGenesis:
+        <<: *ChannelDefaults
+        Orderer:
+            <<: *OrdererDefaults
+            Organizations:
+                - *OrdererOrg
+            Capabilities:
+                <<: *OrdererCapabilities
+        Consortiums:
+            HerbionyxConsortium:
+                Organizations:
+                    - *FarmersCoop
+                    - *LabsOrg
+                    - *ProcessorsOrg
+                    - *ManufacturersOrg
+                    - *NMPBOrg
+
+    AyurvedaChannel:
+        Consortium: HerbionyxConsortium
+        <<: *ChannelDefaults
+        Application:
+            <<: *ApplicationDefaults
+            Organizations:
+                - *FarmersCoop
+                - *LabsOrg
+                - *ProcessorsOrg
+                - *ManufacturersOrg
+                - *NMPBOrg
+            Capabilities:
+                <<: *ApplicationCapabilities

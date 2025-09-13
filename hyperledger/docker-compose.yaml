@@ -1,0 +1,300 @@
+version: '3.7'
+
+volumes:
+  orderer.herbionyx.com:
+  peer0.farmers.herbionyx.com:
+  peer0.labs.herbionyx.com:
+  peer0.processors.herbionyx.com:
+  peer0.manufacturers.herbionyx.com:
+  peer0.nmpb.herbionyx.com:
+
+networks:
+  herbionyx:
+    name: herbionyx
+
+services:
+  orderer.herbionyx.com:
+    container_name: orderer.herbionyx.com
+    image: hyperledger/fabric-orderer:2.4
+    labels:
+      service: hyperledger-fabric
+    environment:
+      - FABRIC_LOGGING_SPEC=INFO
+      - ORDERER_GENERAL_LISTENADDRESS=0.0.0.0
+      - ORDERER_GENERAL_LISTENPORT=7050
+      - ORDERER_GENERAL_LOCALMSPID=OrdererMSP
+      - ORDERER_GENERAL_LOCALMSPDIR=/var/hyperledger/orderer/msp
+      - ORDERER_GENERAL_TLS_ENABLED=true
+      - ORDERER_GENERAL_TLS_PRIVATEKEY=/var/hyperledger/orderer/tls/server.key
+      - ORDERER_GENERAL_TLS_CERTIFICATE=/var/hyperledger/orderer/tls/server.crt
+      - ORDERER_GENERAL_TLS_ROOTCAS=[/var/hyperledger/orderer/tls/ca.crt]
+      - ORDERER_GENERAL_CLUSTER_CLIENTCERTIFICATE=/var/hyperledger/orderer/tls/server.crt
+      - ORDERER_GENERAL_CLUSTER_CLIENTPRIVATEKEY=/var/hyperledger/orderer/tls/server.key
+      - ORDERER_GENERAL_CLUSTER_ROOTCAS=[/var/hyperledger/orderer/tls/ca.crt]
+      - ORDERER_GENERAL_BOOTSTRAPMETHOD=none
+      - ORDERER_CHANNELPARTICIPATION_ENABLED=true
+      - ORDERER_ADMIN_TLS_ENABLED=true
+      - ORDERER_ADMIN_TLS_CERTIFICATE=/var/hyperledger/orderer/tls/server.crt
+      - ORDERER_ADMIN_TLS_PRIVATEKEY=/var/hyperledger/orderer/tls/server.key
+      - ORDERER_ADMIN_TLS_ROOTCAS=[/var/hyperledger/orderer/tls/ca.crt]
+      - ORDERER_ADMIN_TLS_CLIENTROOTCAS=[/var/hyperledger/orderer/tls/ca.crt]
+      - ORDERER_ADMIN_LISTENADDRESS=0.0.0.0:7053
+      - ORDERER_OPERATIONS_LISTENADDRESS=orderer.herbionyx.com:9443
+      - ORDERER_METRICS_PROVIDER=prometheus
+    working_dir: /root
+    command: orderer
+    volumes:
+        - ../organizations/ordererOrganizations/herbionyx.com/orderers/orderer.herbionyx.com/msp:/var/hyperledger/orderer/msp
+        - ../organizations/ordererOrganizations/herbionyx.com/orderers/orderer.herbionyx.com/tls/:/var/hyperledger/orderer/tls
+        - orderer.herbionyx.com:/var/hyperledger/production/orderer
+    ports:
+      - 7050:7050
+      - 7053:7053
+      - 9443:9443
+    networks:
+      - herbionyx
+
+  peer0.farmers.herbionyx.com:
+    container_name: peer0.farmers.herbionyx.com
+    image: hyperledger/fabric-peer:2.4
+    labels:
+      service: hyperledger-fabric
+    environment:
+      - FABRIC_LOGGING_SPEC=INFO
+      - CORE_PEER_TLS_ENABLED=true
+      - CORE_PEER_PROFILE_ENABLED=false
+      - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/fabric/tls/server.crt
+      - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/tls/server.key
+      - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/tls/ca.crt
+      - CORE_PEER_ID=peer0.farmers.herbionyx.com
+      - CORE_PEER_ADDRESS=peer0.farmers.herbionyx.com:7051
+      - CORE_PEER_LISTENADDRESS=0.0.0.0:7051
+      - CORE_PEER_CHAINCODEADDRESS=peer0.farmers.herbionyx.com:7052
+      - CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:7052
+      - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.farmers.herbionyx.com:7051
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.farmers.herbionyx.com:7051
+      - CORE_PEER_LOCALMSPID=FarmersCoopMSP
+      - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/fabric/msp
+      - CORE_OPERATIONS_LISTENADDRESS=peer0.farmers.herbionyx.com:9444
+      - CORE_METRICS_PROVIDER=prometheus
+      - CHAINCODE_AS_A_SERVICE_BUILDER_CONFIG={"peername":"peer0farmers"}
+      - CORE_CHAINCODE_EXECUTETIMEOUT=300s
+    volumes:
+        - ../organizations/peerOrganizations/farmers.herbionyx.com/peers/peer0.farmers.herbionyx.com:/etc/hyperledger/fabric
+        - peer0.farmers.herbionyx.com:/var/hyperledger/production
+    working_dir: /root
+    command: peer node start
+    ports:
+      - 7051:7051
+      - 9444:9444
+    networks:
+      - herbionyx
+
+  peer0.labs.herbionyx.com:
+    container_name: peer0.labs.herbionyx.com
+    image: hyperledger/fabric-peer:2.4
+    labels:
+      service: hyperledger-fabric
+    environment:
+      - FABRIC_LOGGING_SPEC=INFO
+      - CORE_PEER_TLS_ENABLED=true
+      - CORE_PEER_PROFILE_ENABLED=false
+      - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/fabric/tls/server.crt
+      - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/tls/server.key
+      - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/tls/ca.crt
+      - CORE_PEER_ID=peer0.labs.herbionyx.com
+      - CORE_PEER_ADDRESS=peer0.labs.herbionyx.com:8051
+      - CORE_PEER_LISTENADDRESS=0.0.0.0:8051
+      - CORE_PEER_CHAINCODEADDRESS=peer0.labs.herbionyx.com:8052
+      - CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:8052
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.labs.herbionyx.com:8051
+      - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.labs.herbionyx.com:8051
+      - CORE_PEER_LOCALMSPID=LabsOrgMSP
+      - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/fabric/msp  
+      - CORE_OPERATIONS_LISTENADDRESS=peer0.labs.herbionyx.com:9445
+      - CORE_METRICS_PROVIDER=prometheus
+      - CHAINCODE_AS_A_SERVICE_BUILDER_CONFIG={"peername":"peer0labs"}
+      - CORE_CHAINCODE_EXECUTETIMEOUT=300s
+    volumes:
+        - ../organizations/peerOrganizations/labs.herbionyx.com/peers/peer0.labs.herbionyx.com:/etc/hyperledger/fabric
+        - peer0.labs.herbionyx.com:/var/hyperledger/production
+    working_dir: /root
+    command: peer node start
+    ports:
+      - 8051:8051
+      - 9445:9445
+    networks:
+      - herbionyx
+
+  peer0.processors.herbionyx.com:
+    container_name: peer0.processors.herbionyx.com
+    image: hyperledger/fabric-peer:2.4
+    labels:
+      service: hyperledger-fabric
+    environment:
+      - FABRIC_LOGGING_SPEC=INFO
+      - CORE_PEER_TLS_ENABLED=true
+      - CORE_PEER_PROFILE_ENABLED=false
+      - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/fabric/tls/server.crt
+      - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/tls/server.key
+      - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/tls/ca.crt
+      - CORE_PEER_ID=peer0.processors.herbionyx.com
+      - CORE_PEER_ADDRESS=peer0.processors.herbionyx.com:9051
+      - CORE_PEER_LISTENADDRESS=0.0.0.0:9051
+      - CORE_PEER_CHAINCODEADDRESS=peer0.processors.herbionyx.com:9052
+      - CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:9052
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.processors.herbionyx.com:9051
+      - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.processors.herbionyx.com:9051
+      - CORE_PEER_LOCALMSPID=ProcessorsOrgMSP
+      - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/fabric/msp
+      - CORE_OPERATIONS_LISTENADDRESS=peer0.processors.herbionyx.com:9446
+      - CORE_METRICS_PROVIDER=prometheus
+      - CHAINCODE_AS_A_SERVICE_BUILDER_CONFIG={"peername":"peer0processors"}
+      - CORE_CHAINCODE_EXECUTETIMEOUT=300s
+    volumes:
+        - ../organizations/peerOrganizations/processors.herbionyx.com/peers/peer0.processors.herbionyx.com:/etc/hyperledger/fabric
+        - peer0.processors.herbionyx.com:/var/hyperledger/production
+    working_dir: /root
+    command: peer node start
+    ports:
+      - 9051:9051
+      - 9446:9446
+    networks:
+      - herbionyx
+
+  peer0.manufacturers.herbionyx.com:
+    container_name: peer0.manufacturers.herbionyx.com
+    image: hyperledger/fabric-peer:2.4
+    labels:
+      service: hyperledger-fabric
+    environment:
+      - FABRIC_LOGGING_SPEC=INFO
+      - CORE_PEER_TLS_ENABLED=true
+      - CORE_PEER_PROFILE_ENABLED=false
+      - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/fabric/tls/server.crt
+      - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/tls/server.key
+      - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/tls/ca.crt
+      - CORE_PEER_ID=peer0.manufacturers.herbionyx.com
+      - CORE_PEER_ADDRESS=peer0.manufacturers.herbionyx.com:10051
+      - CORE_PEER_LISTENADDRESS=0.0.0.0:10051
+      - CORE_PEER_CHAINCODEADDRESS=peer0.manufacturers.herbionyx.com:10052
+      - CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:10052
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.manufacturers.herbionyx.com:10051
+      - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.manufacturers.herbionyx.com:10051
+      - CORE_PEER_LOCALMSPID=ManufacturersOrgMSP
+      - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/fabric/msp
+      - CORE_OPERATIONS_LISTENADDRESS=peer0.manufacturers.herbionyx.com:9447
+      - CORE_METRICS_PROVIDER=prometheus
+      - CHAINCODE_AS_A_SERVICE_BUILDER_CONFIG={"peername":"peer0manufacturers"}
+      - CORE_CHAINCODE_EXECUTETIMEOUT=300s
+    volumes:
+        - ../organizations/peerOrganizations/manufacturers.herbionyx.com/peers/peer0.manufacturers.herbionyx.com:/etc/hyperledger/fabric
+        - peer0.manufacturers.herbionyx.com:/var/hyperledger/production
+    working_dir: /root
+    command: peer node start
+    ports:
+      - 10051:10051
+      - 9447:9447
+    networks:
+      - herbionyx
+
+  peer0.nmpb.herbionyx.com:
+    container_name: peer0.nmpb.herbionyx.com
+    image: hyperledger/fabric-peer:2.4
+    labels:
+      service: hyperledger-fabric
+    environment:
+      - FABRIC_LOGGING_SPEC=INFO
+      - CORE_PEER_TLS_ENABLED=true
+      - CORE_PEER_PROFILE_ENABLED=false
+      - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/fabric/tls/server.crt
+      - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/tls/server.key
+      - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/tls/ca.crt
+      - CORE_PEER_ID=peer0.nmpb.herbionyx.com
+      - CORE_PEER_ADDRESS=peer0.nmpb.herbionyx.com:11051
+      - CORE_PEER_LISTENADDRESS=0.0.0.0:11051
+      - CORE_PEER_CHAINCODEADDRESS=peer0.nmpb.herbionyx.com:11052
+      - CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:11052
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.nmpb.herbionyx.com:11051
+      - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.nmpb.herbionyx.com:11051
+      - CORE_PEER_LOCALMSPID=NMPBOrgMSP
+      - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/fabric/msp
+      - CORE_OPERATIONS_LISTENADDRESS=peer0.nmpb.herbionyx.com:9448
+      - CORE_METRICS_PROVIDER=prometheus
+      - CHAINCODE_AS_A_SERVICE_BUILDER_CONFIG={"peername":"peer0nmpb"}
+      - CORE_CHAINCODE_EXECUTETIMEOUT=300s
+    volumes:
+        - ../organizations/peerOrganizations/nmpb.herbionyx.com/peers/peer0.nmpb.herbionyx.com:/etc/hyperledger/fabric
+        - peer0.nmpb.herbionyx.com:/var/hyperledger/production
+    working_dir: /root
+    command: peer node start
+    ports:
+      - 11051:11051
+      - 9448:9448
+    networks:
+      - herbionyx
+
+  couchdb0:
+    container_name: couchdb0
+    image: couchdb:3.3.0
+    labels:
+      service: hyperledger-fabric
+    environment:
+      - COUCHDB_USER=admin
+      - COUCHDB_PASSWORD=adminpw
+    ports:
+      - "5984:5984"
+    networks:
+      - herbionyx
+
+  couchdb1:
+    container_name: couchdb1
+    image: couchdb:3.3.0
+    labels:
+      service: hyperledger-fabric
+    environment:
+      - COUCHDB_USER=admin
+      - COUCHDB_PASSWORD=adminpw
+    ports:
+      - "6984:5984"
+    networks:
+      - herbionyx
+
+  couchdb2:
+    container_name: couchdb2
+    image: couchdb:3.3.0
+    labels:
+      service: hyperledger-fabric
+    environment:
+      - COUCHDB_USER=admin
+      - COUCHDB_PASSWORD=adminpw
+    ports:
+      - "7984:5984"
+    networks:
+      - herbionyx
+
+  couchdb3:
+    container_name: couchdb3
+    image: couchdb:3.3.0
+    labels:
+      service: hyperledger-fabric
+    environment:
+      - COUCHDB_USER=admin
+      - COUCHDB_PASSWORD=adminpw
+    ports:
+      - "8984:5984"
+    networks:
+      - herbionyx
+
+  couchdb4:
+    container_name: couchdb4
+    image: couchdb:3.3.0
+    labels:
+      service: hyperledger-fabric
+    environment:
+      - COUCHDB_USER=admin
+      - COUCHDB_PASSWORD=adminpw
+    ports:
+      - "9984:5984"
+    networks:
+      - herbionyx
