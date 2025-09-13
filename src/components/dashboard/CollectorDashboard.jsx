@@ -143,14 +143,20 @@ function CollectorDashboard() {
   };
 
   const species = [
-    'Ashwagandha',
-    'Turmeric',
-    'Neem',
-    'Tulsi',
-    'Brahmi',
-    'Giloy',
-    'Amla',
-    'Arjuna'
+    'Talispatra', 'Chirmati', 'Katha', 'Vatsnabh', 'Atees', 'Vach', 'Adusa', 'Beal', 'Shirish', 'Ghritkumari',
+    'Smaller Galanga', 'Greater Galanga', 'Satvin', 'Silarasa', 'Akarkara', 'Kalmegh', 'Agar', 'Artemisia', 'Shatavari', 'Atropa',
+    'Neem', 'Brahmi', 'Daruhaldi', 'Pashnabheda', 'Punarnava', 'Patang', 'Senna', 'Sadabahar', 'Malkangani', 'Mandookparni',
+    'ShwetMusali', 'Tezpatta', 'Dalchini', 'Kapoor', 'Arni', 'Aparajita', 'Pather Chur', 'Hrivera', 'Guggal', 'Shankhpushpi',
+    'Mamira', 'Peela Chandan', 'Varun', 'Krsnasariva', 'Kali Musali', 'Tikhur', 'Nannari', 'Salampanja', 'Sarivan', 'Foxglove',
+    'Rotalu', 'Bringaraj', 'Vai Vidang', 'Amla', 'Somlata', 'Hing', 'Kokum', 'Trayamana', 'Ginkgo', 'Kalihari',
+    'Mulethi', 'Gambhari', 'Gudmar', 'Kapurkachari', 'Anantmool', 'Seabuckthorn', 'Kutaj', 'Khurasaniajwane', 'Pushkarmool', 'Giant potato',
+    'Vrddhadaruka', 'Trivrit', 'Hapushal', 'Dhoop', 'Indian crocus', 'Chandrasur', 'Jivanti', 'Listea', 'Ghanera', 'Nagakeshar',
+    'Sahjan', 'Konch', 'Jatamansi', 'Tulsi', 'Ratanjot', 'Syonaka', 'Ginseng', 'Bhumi amlaki', 'Kutki', 'Kababchini',
+    'Pippali', 'Isabgol', 'Rasna', 'Leadwort', 'Chitrak', 'Bankakri', 'Mahameda', 'Agnimanth', 'Moovila', 'Bakuchi',
+    'Beejasar', 'Raktachandan', 'Vidarikand', 'Sarpgandha', 'Archa', 'Manjishtha', 'Saptachakra', 'Chandan', 'Ashok', 'Kuth',
+    'Flannel weed', 'Hrddhatri', 'Katheli-badhi', 'Makoy', 'Patala', 'Madhukari', 'Chirata', 'Lodh', 'Rohitak', 'Thuner',
+    'Sharapunkha', 'Arjuna', 'Behera', 'Harad', 'Giloe', 'Barhanta', 'Patolpanchang', 'Jeevani', 'Damabooti', 'Prishnaparni',
+    'Tagar-ganth', 'Indian Valerian', 'Mandadhupa', 'Khas-khas grass', 'Bunafsha', 'Nirgundi', 'Ashwagandha', 'Dhataki', 'Timoor'
   ];
 
   return (
